@@ -19,13 +19,51 @@ app.use('/api/auth',authRoutes);
 
   
   // قراءة الرابط من Environment Variables
-  const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/InteriorDesign';
+  // const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/InteriorDesign';
   
-  mongoose.connect(mongoUrl)
-    .then(() => console.log('Connected to MongoDB!'))
-    .catch((err) => console.error('Error connecting to MongoDB:', err));
-  
-// Models
+  // mongoose.connect(mongoUrl)
+  //   .then(() => console.log('Connected to MongoDB!'))
+  //   .catch((err) => console.error('Error connecting to MongoDB:', err));
+  // const mongoose = require('mongoose');
+
+// mongoose.connect('mongodb+srv://lzayd927:25122002aliaa@cluster0.8kbk0.mongodb.net/InteriorDesign?retryWrites=true&w=majority', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// })
+// .then(() => console.log('Connected to MongoDB Atlas!'))
+// .catch(err => console.error('Connection error:', err));
+
+// const mongoose = require('mongoose');
+
+// const uri = 'mongodb+srv://lzayd927:25122002aliaa@cluster0.8kkb0.mongodb.net/InteriorDesign?retryWrites=true&w=majority&appName=Cluster0';
+
+// mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => {
+//     console.log('Connected to MongoDB Atlas');
+//   })
+//   .catch(err => {
+//     console.error('Connection error', err);
+//   });
+
+// const mongoose = require('mongoose');
+
+// const uri = 'mongodb+srv://lzayd927:25122002aliaa@cluster0.8kkb0.mongodb.net/InteriorDesign?retryWrites=true&w=majority&appName=Cluster0';
+
+// mongoose.connect(uri)
+//   .then(() => {
+//     console.log('Connected to MongoDB Atlas');
+//   })
+//   .catch(err => {
+//     console.error('Connection error', err);
+//   });
+
+
+const mongoURI = process.env.MONGO_URI || 'mongodb+srv://lzayd927:25122002aliaa@cluster0.8kkb0.mongodb.net/InteriorDesign?retryWrites=true&w=majority&appName=Cluster0';
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch((err) => console.log('MongoDB connection error: ', err));
+
 // استيراد النماذج
 const User = require('./models/User');
 const Room = require('./models/Room');
