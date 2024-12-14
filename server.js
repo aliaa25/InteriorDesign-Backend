@@ -16,7 +16,7 @@ if (!mongoURI) {
 }
 
 // Connect to MongoDB
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
   .then(() => console.info('Connected to MongoDB Atlas successfully'))
   .catch((err) => {
     throw new Error('Failed to connect to MongoDB: ' + err.message);
