@@ -7,63 +7,21 @@ require('dotenv').config();
 // إنشاء تطبيق Express
 const app = express();
 app.use(express.json());
-app.use('/api/auth',authRoutes);
 
-// الاتصال بقاعدة البيانات
+const port = process.env.PORT || 5000;
+const mongoURI = process.env.MONGO_URI;
 
-// mongoose.connect('mongodb://localhost:27017/InteriorDesign')
-//   .then(() => console.log('Connected to MongoDB!'))
-//   .catch((err) => console.error('Error connecting to MongoDB:', err));
+if (!mongoURI) {
+  throw new Error('MongoDB connection string (MONGO_URI) is missing. Please check your .env file.');
+}
 
-
-
-  
-  // قراءة الرابط من Environment Variables
-  // const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/InteriorDesign';
-  
-  // mongoose.connect(mongoUrl)
-  //   .then(() => console.log('Connected to MongoDB!'))
-  //   .catch((err) => console.error('Error connecting to MongoDB:', err));
-  // const mongoose = require('mongoose');
-
-// mongoose.connect('mongodb+srv://lzayd927:25122002aliaa@cluster0.8kbk0.mongodb.net/InteriorDesign?retryWrites=true&w=majority', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// })
-// .then(() => console.log('Connected to MongoDB Atlas!'))
-// .catch(err => console.error('Connection error:', err));
-
-// const mongoose = require('mongoose');
-
-// const uri = 'mongodb+srv://lzayd927:25122002aliaa@cluster0.8kkb0.mongodb.net/InteriorDesign?retryWrites=true&w=majority&appName=Cluster0';
-
-// mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-//   .then(() => {
-//     console.log('Connected to MongoDB Atlas');
-//   })
-//   .catch(err => {
-//     console.error('Connection error', err);
-//   });
-
-// const mongoose = require('mongoose');
-
-// const uri = 'mongodb+srv://lzayd927:25122002aliaa@cluster0.8kkb0.mongodb.net/InteriorDesign?retryWrites=true&w=majority&appName=Cluster0';
-
-// mongoose.connect(uri)
-//   .then(() => {
-//     console.log('Connected to MongoDB Atlas');
-//   })
-//   .catch(err => {
-//     console.error('Connection error', err);
-//   });
-
-
-const mongoURI = process.env.MONGO_URI || 'mongodb+srv://lzayd927:25122002aliaa@cluster0.8kkb0.mongodb.net/InteriorDesign?retryWrites=true&w=majority&appName=Cluster0';
-
+// Connect to MongoDB
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch((err) => console.log('MongoDB connection error: ', err));
-
+  .then(() => console.info('Connected to MongoDB Atlas successfully'))
+  .catch((err) => {
+    throw new Error('Failed to connect to MongoDB: ' + err.message);
+  });
+app.use('/api/auth',authRoutes);
 // استيراد النماذج
 const User = require('./models/User');
 const Room = require('./models/Room');
@@ -73,29 +31,7 @@ const FurnitureLibrary = require('./models/FurnitureLibrary');
 const RoomItem = require('./models/RoomItem');
 const ARSession = require('./models/ARSession');
 const Recommendation = require('./models/Recommendation');
-// نقطة اختبار (اختياري)
-// app.get('/', (req, res) => {
-//     res.send('Server is running...');
-// });
 
-// // بدء الخادم
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-
-
-
-
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const { User } = require('./models/userModel');  // استيراد النموذج من الملف
-// const app = express();
-
-// app.use(express.json());  // لتحويل بيانات الـ JSON
-
-// الاتصال بقاعدة البيانات
-// mongoose.connect('mongodb://localhost:27017/InteriorDesign', { useNewUrlParser: true, useUnifiedTopology: true })
-//   .then(() => console.log('Connected to MongoDB!'))
-//   .catch(err => console.log('Error connecting to MongoDB:', err));
 
 // GET: جلب جميع المستخدمين
 app.get('/users', async (req, res) => {
@@ -162,9 +98,9 @@ app.delete('/users/:id', (req, res) => {
 });
 
 
-// تشغيل السيرفر على المنفذ 5000
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
 
