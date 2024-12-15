@@ -63,36 +63,62 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
+    // 1️⃣ البحث عن المستخدم في قاعدة البيانات باستخدام الإيميل
     const user = await User.findOne({ Email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    // const isPasswordValid = await bcrypt.compare(Password, user.Password);
-    // if (!isPasswordValid) {
-    //   return res.status(400).json({ message: 'Invalid password' });
-    // }
-   
-    const hashedPassword = await bcrypt.hash(Password, 10);
-    const isMatch = await bcrypt.compare(user.Password, hashedPassword);
-if (!isMatch) {
-    return res.status(400).json({ message: "Invalid password" });
-}
+    console.log('User found:', user); 
 
-    const token = jwt.sign(
-      { userId: user._id, email: user.Email }, 
-      process.env.JWT_SECRET
-    );
+    // 2️⃣ مقارنة كلمة المرور المدخلة بالكلمة المخزنة في قاعدة البيانات
+    const isPasswordValid = await bcrypt.compare(Password, user.Password);
+    console.log('Password comparison result:', isPasswordValid);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: 'Invalid password' });
+    }
 
+    // 3️⃣ إنشاء الـ JWT
+    const payload = {
+      userId: user._id,  
+      email: user.Email 
+    };
+    
+    // تأكد من أن لديك مفتاح سري في البيئة لتوقيع الـ JWT
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+
+    // 4️⃣ إرسال الرد مع الـ token والمعلومات الأخرى للمستخدم
     res.status(200).json({ 
       message: 'Login successful', 
       token, 
       user: { id: user._id, name: user.Name, email: user.Email } 
     });
+    
   } catch (error) {
     console.error('Error in login:', error);
     res.status(500).json({ message: 'Server error, please try again later' });
   }
 });
 
+async function updatePasswords() {
+  const users = await User.find({}); // جلب جميع المستخدمين
+
+  for (let user of users) {
+    // إذا كانت كلمة المرور نص عادي وليست مشفرة
+    if (user.Password && !user.Password.startsWith('$2a$')) { // التحقق إذا كانت الكلمة غير مشفرة
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(user.Password, salt);
+
+      // تحديث كلمة المرور في قاعدة البيانات
+      user.Password = hashedPassword;
+      await user.save();
+      console.log(`Updated password for user: ${user.Email}`);
+    }
+  }
+}
+
+// استدعاء الدالة لتحديث كلمات المرور المخزنة النصية
+updatePasswords().catch(err => console.log(err));
+
 module.exports = router;
+
     

@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 require('dotenv').config();
+const cors = require('cors');
 
 // إنشاء تطبيق Express
 const app = express();
@@ -104,7 +105,11 @@ app.delete('/:id', (req, res) => {
 //   res.send('Welcome to the Home Page!');
 // });
 
-
+app.use(cors({
+  origin: ['http://localhost:3000', process.env.koyeb_app_url],  // النطاقات المسموح بها
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
