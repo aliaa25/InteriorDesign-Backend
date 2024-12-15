@@ -67,11 +67,16 @@ router.post('/login', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-     
-    const isPasswordValid = await bcrypt.compare(Password, user.Password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: 'Invalid password' });
-    }
+    // const isPasswordValid = await bcrypt.compare(Password, user.Password);
+    // if (!isPasswordValid) {
+    //   return res.status(400).json({ message: 'Invalid password' });
+    // }
+   
+    const hashedPassword = await bcrypt.hash(Password, 10);
+    const isMatch = await bcrypt.compare(user.Password, hashedPassword);
+if (!isMatch) {
+    return res.status(400).json({ message: "Invalid password" });
+}
 
     const token = jwt.sign(
       { userId: user._id, email: user.Email }, 
