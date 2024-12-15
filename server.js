@@ -37,7 +37,7 @@ const Recommendation = require('./models/Recommendation');
 
 
 // GET: جلب جميع المستخدمين
-app.get('/users', async (req, res) => {
+app.get('/', async (req, res) => {
   try {
     const users = await User.find(); // استرجاع جميع المستخدمين من قاعدة البيانات
     res.status(200).json(users); // إرسال البيانات في الاستجابة
@@ -47,7 +47,7 @@ app.get('/users', async (req, res) => {
 });
 
 // POST: إضافة مستخدم جديد
-app.post('/users', async (req, res) => {
+app.post('/', async (req, res) => {
   try {
     const newUser = new User(req.body); // إنشاء مستخدم جديد باستخدام البيانات القادمة من الـ Body
     await newUser.save(); // حفظ المستخدم الجديد في قاعدة البيانات
@@ -57,7 +57,7 @@ app.post('/users', async (req, res) => {
   }
 });
 
-app.put('/users/:id', (req, res) => {
+app.put('/:id', (req, res) => {
   const userId = req.params.id; // نجيب الـ id من الـ URL
   const updatedData = req.body; // نجيب البيانات الجديدة من الـ Body في الطلب
 
@@ -71,7 +71,7 @@ app.put('/users/:id', (req, res) => {
       .catch(err => res.status(400).json({ error: err.message }));
 });
 // الكود الخاص بتحديث جزء من بيانات المستخدم باستخدام PATCH
-app.patch('/users/:id', (req, res) => {
+app.patch('/:id', (req, res) => {
   const userId = req.params.id; // نجيب الـ id من الـ URL
   const updatedData = req.body; // نجيب البيانات الجديدة من الـ Body في الطلب
 
@@ -87,7 +87,7 @@ app.patch('/users/:id', (req, res) => {
       .catch(err => res.status(400).json({ error: err.message })); // لو حصل خطأ
 });
 
-app.delete('/users/:id', (req, res) => {
+app.delete('/:id', (req, res) => {
   const userId = req.params.id;
   
   User.findByIdAndDelete(userId)
@@ -100,6 +100,9 @@ app.delete('/users/:id', (req, res) => {
       .catch(err => res.status(400).json({ error: err.message })); // لو فيه خطأ
 });
 
+// app.get('/', (req, res) => {
+//   res.send('Welcome to the Home Page!');
+// });
 
 
 
