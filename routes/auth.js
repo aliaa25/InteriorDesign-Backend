@@ -1,12 +1,10 @@
 const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User'); 
 const cors = require('cors');// رابط بملف User.js
-app.use(cors());
-app.use(express.json());
-
+const router = express.Router()
+router.use(cors());
 // 🛠️ Route لتسجيل مستخدم جديد
 router.post('/register', async (req, res) => {
   try {
