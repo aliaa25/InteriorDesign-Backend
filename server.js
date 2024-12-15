@@ -7,8 +7,11 @@ require('dotenv').config();
 // إنشاء تطبيق Express
 const app = express();
 app.use(express.json());
+const cors = require('cors');
+app.use(cors());
 
-const port = process.env.PORT || 5000;
+
+const port = process.env.PORT || 8000;
 const mongoURI = process.env.MONGO_URI;
 
 if (!mongoURI) {
